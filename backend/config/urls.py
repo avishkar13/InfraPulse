@@ -29,4 +29,12 @@ urlpatterns = [
         TokenRefreshView.as_view(),
         name="token_refresh",
     ),
+    path(
+        "api/organizations/",
+        include("organizations.urls"),
+    ),
+    path(
+    "api/projects/",
+    include("projects.urls"),
+),
 ]
