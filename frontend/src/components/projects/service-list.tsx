@@ -1,6 +1,6 @@
 import { ProjectService } from "@/types/project";
 import { ProjectStatusIndicator } from "./project-status";
-import { Copy, MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 interface ServiceListProps {
@@ -16,15 +16,13 @@ export function ServiceList({ services }: ServiceListProps) {
       </div>
       
       <div className="rounded-lg border bg-card overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b bg-muted/50">
+        <div className="overflow-x-auto max-h-[400px] overflow-y-auto">
+          <table className="w-full text-sm relative">
+            <thead className="sticky top-0 z-10 shadow-sm">
+              <tr className="border-b bg-muted/95 backdrop-blur supports-[backdrop-filter]:bg-muted/50">
                 <th className="h-10 px-4 text-left font-medium text-muted-foreground w-1/3">Service</th>
                 <th className="h-10 px-4 text-left font-medium text-muted-foreground">Status</th>
-                <th className="h-10 px-4 text-left font-medium text-muted-foreground">Version</th>
-                <th className="h-10 px-4 text-left font-medium text-muted-foreground">Replicas</th>
-                <th className="h-10 px-4 text-left font-medium text-muted-foreground">Latency</th>
+                <th className="h-10 px-4 text-left font-medium text-muted-foreground">Description</th>
                 <th className="h-10 px-4 text-right font-medium text-muted-foreground w-[50px]"></th>
               </tr>
             </thead>
@@ -38,14 +36,9 @@ export function ServiceList({ services }: ServiceListProps) {
                   <td className="p-4">
                     <ProjectStatusIndicator status={service.status} />
                   </td>
-                  <td className="p-4 text-muted-foreground">
-                    <div className="flex items-center gap-2">
-                      <span className="truncate max-w-[100px] inline-block">{service.version}</span>
-                      <Copy className="h-3 w-3 text-transparent group-hover:text-muted-foreground hover:!text-foreground transition-colors cursor-pointer" />
-                    </div>
+                  <td className="p-4 text-muted-foreground text-sm truncate max-w-[200px]">
+                    {service.description || "—"}
                   </td>
-                  <td className="p-4 text-muted-foreground">{service.replicas}</td>
-                  <td className="p-4 text-muted-foreground">{service.latency || "—"}</td>
                   <td className="p-4 text-right">
                     <Button variant="ghost" size="icon" className="h-8 w-8 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity">
                       <MoreHorizontal className="h-4 w-4" />

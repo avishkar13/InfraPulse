@@ -2,10 +2,10 @@ import { Button } from "@/components/ui/button";
 
 export function OAuthButtons() {
   return (
-    <div className="flex flex-col gap-3 w-full mt-4">
+    <div className="flex flex-col gap-2 w-full mt-3">
       <Button 
         variant="outline" 
-        className="w-full bg-background hover:bg-muted/50 transition-colors h-11 cursor-pointer"
+        className="w-full bg-background hover:bg-muted/50 transition-colors h-9 text-xs sm:text-sm cursor-pointer"
         type="button"
       >
         <svg 
@@ -27,7 +27,7 @@ export function OAuthButtons() {
       </Button>
       <Button 
         variant="outline" 
-        className="w-full bg-background hover:bg-muted/50 transition-colors h-11 cursor-pointer"
+        className="w-full bg-background hover:bg-muted/50 transition-colors h-9 text-xs sm:text-sm cursor-pointer"
         type="button"
       >
         <svg 

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { navigation } from "./navigation";
 import { Activity } from "lucide-react"; // Branding icon
+import { OrganizationSwitcher } from "./organization-switcher";
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -17,6 +18,8 @@ export function Sidebar() {
           <span className="text-lg tracking-tight">InfraPulse</span>
         </Link>
       </div>
+      
+      <OrganizationSwitcher />
 
       <div className="flex-1 overflow-auto py-4">
         <nav className="grid gap-6 px-4 text-sm font-medium">

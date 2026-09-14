@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { ProjectEnvironment } from "@/types/project";
+import { useState, useEffect } from "react";
+import { Project } from "@/types/project";
 import { ProjectCard } from "@/components/projects/project-card";
 import { ProjectTable } from "@/components/projects/project-table";
 import { Button } from "@/components/ui/button";
-import { Plus, LayoutGrid, List, Search } from "lucide-react";
+import { Plus, LayoutGrid, List, Search, Loader2 } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -14,25 +14,74 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
-import { mockProjects } from "@/lib/mock-data";
+import { useOrganization } from "@/providers/org-provider";
+import { apiClient } from "@/api/client";
+import { PROJECTS } from "@/api/endpoints";
 
 export default function ProjectsPage() {
+  const { currentOrganization } = useOrganization();
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("All");
   const [envFilter, setEnvFilter] = useState<string>("All");
 
-  const filteredProjects = mockProjects.filter((proj) => {
+  useEffect(() => {
+    async function fetchProjects() {
+      if (!currentOrganization) {
+        setProjects([]);
+        setIsLoading(false);
+        return;
+      }
+      setIsLoading(true);
+      setError(null);
+      try {
+        const response = await apiClient.get<Project[]>(`${PROJECTS}?organization=${currentOrganization.id}`);
+        setProjects(response.data);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message || "Failed to load projects");
+        } else {
+          setError("Failed to load projects");
+        }
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchProjects();
+  }, [currentOrganization]);
+
+  const filteredProjects = projects.filter((proj) => {
     const matchesSearch = proj.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
                           proj.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "All" || proj.status === statusFilter;
-    const matchesEnv = envFilter === "All" || proj.environments.includes(envFilter as ProjectEnvironment);
+    const matchesEnv = envFilter === "All" || proj.environments.some(e => e.name === envFilter);
     return matchesSearch && matchesStatus && matchesEnv;
   });
 
-  const healthyCount = mockProjects.filter(p => p.status === "Healthy").length;
-  const degradedCount = mockProjects.filter(p => p.status === "Degraded" || p.status === "Failed").length;
-  const deployingCount = mockProjects.filter(p => p.status === "Deploying").length;
+  const healthyCount = projects.filter(p => p.status === "Healthy").length;
+  const degradedCount = projects.filter(p => p.status === "Degraded" || p.status === "Failed").length;
+  const deployingCount = projects.filter(p => p.status === "Deploying").length;
+
+  if (isLoading) {
+    return (
+      <div className="flex h-[50vh] items-center justify-center w-full">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex flex-col h-[50vh] items-center justify-center w-full gap-4">
+        <p className="text-red-500 font-medium">{error}</p>
+        <Button variant="outline" onClick={() => window.location.reload()}>Retry</Button>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto">
@@ -52,7 +101,7 @@ export default function ProjectsPage() {
 
       {/* Summary Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <MetricBox value={mockProjects.length} label="Total Projects" />
+        <MetricBox value={projects.length} label="Total Projects" />
         <MetricBox value={healthyCount} label="Healthy" valueClass="text-emerald-500" />
         <MetricBox value={degradedCount} label="Degraded / Failed" valueClass="text-amber-500" />
         <MetricBox value={deployingCount} label="Deploying" valueClass="text-blue-500" />

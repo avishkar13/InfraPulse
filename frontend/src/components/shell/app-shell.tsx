@@ -2,7 +2,10 @@
 
 import { Sidebar } from "./sidebar";
 import { Header } from "./header";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/providers/auth-provider";
+import { useEffect } from "react";
+import { Loader2 } from "lucide-react";
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -10,6 +13,30 @@ interface AppShellProps {
 
 export function AppShell({ children }: AppShellProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { isAuthenticated, isLoading } = useAuth();
+
+  useEffect(() => {
+    if (!isLoading) {
+      if (!isAuthenticated && !pathname.startsWith("/auth")) {
+        router.push("/auth/sign-in");
+      } else if (isAuthenticated && pathname.startsWith("/auth")) {
+        router.push("/");
+      }
+    }
+  }, [isLoading, isAuthenticated, pathname, router]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  // Prevent flash of content before redirect
+  if (!isAuthenticated && !pathname.startsWith("/auth")) return null;
+  if (isAuthenticated && pathname.startsWith("/auth")) return null;
   
   if (pathname.startsWith("/auth")) {
     return <>{children}</>;

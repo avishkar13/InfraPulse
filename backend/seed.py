@@ -20,17 +20,17 @@ def run_seed():
 
     # 1. Users
     users_data = [
-        {"email": "owner@infrapulse.dev", "password": "password123", "role": Membership.Role.OWNER, "first_name": "Alice", "last_name": "Owner"},
-        {"email": "admin@infrapulse.dev", "password": "password123", "role": Membership.Role.ADMIN, "first_name": "Bob", "last_name": "Admin"},
-        {"email": "developer@infrapulse.dev", "password": "password123", "role": Membership.Role.DEVELOPER, "first_name": "Charlie", "last_name": "Dev"},
-        {"email": "viewer@infrapulse.dev", "password": "password123", "role": Membership.Role.VIEWER, "first_name": "Diana", "last_name": "Viewer"},
+        {"email": "owner@infrapulse.dev", "password": "password123", "role": Membership.Role.OWNER, "name": "Alice Owner"},
+        {"email": "admin@infrapulse.dev", "password": "password123", "role": Membership.Role.ADMIN, "name": "Bob Admin"},
+        {"email": "developer@infrapulse.dev", "password": "password123", "role": Membership.Role.DEVELOPER, "name": "Charlie Dev"},
+        {"email": "viewer@infrapulse.dev", "password": "password123", "role": Membership.Role.VIEWER, "name": "Diana Viewer"},
     ]
 
     users = {}
     for data in users_data:
         user, created = User.objects.get_or_create(
             email=data["email"],
-            defaults={"first_name": data["first_name"], "last_name": data["last_name"]}
+            defaults={"name": data["name"]}
         )
         if created:
             user.set_password(data["password"])

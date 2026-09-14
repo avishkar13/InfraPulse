@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { AppShell } from "@/components/shell/app-shell";
+import { Providers } from "@/providers/providers";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -30,13 +31,16 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={cn("h-full", "antialiased", geistSans.variable, geistMono.variable, "font-sans", inter.variable, "dark")}
     >
       <body className="min-h-full flex flex-col">
         <TooltipProvider>
-          <AppShell>
-            {children}
-          </AppShell>
+          <Providers>
+            <AppShell>
+              {children}
+            </AppShell>
+          </Providers>
         </TooltipProvider>
       </body>
     </html>

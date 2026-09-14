@@ -5,9 +5,20 @@ import { Search, Bell, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/providers/auth-provider";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+  DropdownMenuGroup,
+} from "@/components/ui/dropdown-menu";
 
 export function Header() {
   const pathname = usePathname();
+  const { user, logout } = useAuth();
 
   const getRouteTitle = () => {
     if (!pathname || pathname === '/') return 'Overview';
@@ -50,12 +61,32 @@ export function Header() {
             <span className="absolute top-2 right-2.5 h-1.5 w-1.5 rounded-full bg-blue-500" />
             <span className="sr-only">Notifications</span>
           </Button>
-          <Avatar className="h-8 w-8 rounded-md cursor-pointer border ml-2">
-            <AvatarImage src="" alt="@user" />
-            <AvatarFallback className="rounded-md bg-primary/10 text-primary">
-              <User className="h-4 w-4" />
-            </AvatarFallback>
-          </Avatar>
+          <DropdownMenu>
+            <DropdownMenuTrigger className="focus:outline-none">
+              <Avatar className="h-8 w-8 rounded-md cursor-pointer border ml-2">
+                <AvatarImage src="" alt="@user" />
+                <AvatarFallback className="rounded-md bg-primary/10 text-primary">
+                  <User className="h-4 w-4" />
+                </AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-56">
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col space-y-1">
+                    <p className="text-sm font-medium leading-none">{user?.name || "User"}</p>
+                    <p className="text-xs leading-none text-muted-foreground">
+                      {user?.email || "user@example.com"}
+                    </p>
+                  </div>
+                </DropdownMenuLabel>
+              </DropdownMenuGroup>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={() => logout()} className="text-red-500 cursor-pointer">
+                Log out
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
     </header>

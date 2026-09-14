@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { navigation } from "./navigation";
 import { useState } from "react";
+import { OrganizationSwitcher } from "./organization-switcher";
 
 export function MobileSidebar() {
   const pathname = usePathname();
@@ -30,6 +31,9 @@ export function MobileSidebar() {
             <span className="text-lg tracking-tight">InfraPulse</span>
           </Link>
         </div>
+        
+        <OrganizationSwitcher />
+
         <div className="flex-1 overflow-auto py-4">
           <nav className="grid gap-6 px-4 text-sm font-medium">
             {navigation.map((group, index) => (

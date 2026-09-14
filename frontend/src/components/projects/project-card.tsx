@@ -1,4 +1,4 @@
-import { Project } from "@/types/project";
+import { Project, ProjectStatus } from "@/types/project";
 import { ProjectStatusIndicator } from "./project-status";
 import { FolderGit2, Box, Server, Clock } from "lucide-react";
 import Link from "next/link";
@@ -35,16 +35,16 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </p>
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1">
             <FolderGit2 className="h-3.5 w-3.5" />
-            <span className="truncate">{project.repository}</span>
+            <span className="truncate">{project.repository?.name || "No repository"}</span>
           </div>
         </div>
 
         {/* Environments & Status */}
         <div className="flex items-center gap-4 text-sm mt-2 border-l-2 pl-3" style={{ borderColor: getStatusColor(project.status) }}>
           <div className="font-medium">
-            {project.environments.includes("Production") ? "Production" : project.environments[0] || "No environment"}
+            {project.environments.find(e => e.name === "Production")?.name || project.environments[0]?.name || "No environment"}
           </div>
-          <ProjectStatusIndicator status={project.status} />
+          <ProjectStatusIndicator status={project.status as ProjectStatus} />
         </div>
 
         {/* Deployment Info */}
@@ -68,7 +68,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
         </div>
         <div className="flex items-center gap-1.5">
           <Box className="h-3.5 w-3.5" />
-          <span>{project.serviceCount} {project.serviceCount === 1 ? 'service' : 'services'}</span>
+          <span>{project.services_count || 0} {(project.services_count === 1) ? 'service' : 'services'}</span>
         </div>
       </div>
     </Link>

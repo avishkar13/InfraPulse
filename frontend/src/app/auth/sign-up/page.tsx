@@ -1,4 +1,5 @@
 import { AuthCard } from "@/components/auth/auth-card";
+import { SignUpForm } from "@/components/auth/sign-up-form";
 import { OAuthButtons } from "@/components/auth/oauth-buttons";
 import Link from "next/link";
 
@@ -8,8 +9,21 @@ export default function SignUpPage() {
       title="Create your account"
       description="Start managing your infrastructure with InfraPulse."
     >
+      <SignUpForm />
+      
+      <div className="relative my-4">
+        <div className="absolute inset-0 flex items-center">
+          <span className="w-full border-t border-muted" />
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-background px-2 text-muted-foreground">
+            Or continue with
+          </span>
+        </div>
+      </div>
+
       <OAuthButtons />
-      <div className="mt-8 text-center text-sm text-gray-400">
+      <div className="mt-5 text-center text-sm text-gray-400">
         Already have an account?{" "}
         <Link 
           href="/auth/sign-in" 

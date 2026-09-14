@@ -1,4 +1,4 @@
-import { Project } from "@/types/project";
+import { Project, ProjectStatus } from "@/types/project";
 import { ProjectStatusIndicator } from "./project-status";
 import Link from "next/link";
 import { Box } from "lucide-react";
@@ -38,16 +38,16 @@ export function ProjectTable({ projects }: ProjectTableProps) {
                   </Link>
                 </td>
                 <td className="px-4 py-3">
-                  <ProjectStatusIndicator status={project.status} />
+                  <ProjectStatusIndicator status={project.status as ProjectStatus} />
                 </td>
-                <td className="px-4 py-3 text-muted-foreground">
-                  {project.repository.replace("github.com/", "")}
+                <td className="px-4 py-3 text-muted-foreground truncate max-w-[150px]">
+                  {project.repository?.name || "None"}
                 </td>
                 <td className="px-4 py-3 text-center text-muted-foreground">
                   {project.environments.length}
                 </td>
                 <td className="px-4 py-3 text-center text-muted-foreground">
-                  {project.serviceCount}
+                  {project.services_count || 0}
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">
                   {project.lastDeployment ? (

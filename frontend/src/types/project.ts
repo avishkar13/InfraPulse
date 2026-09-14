@@ -1,22 +1,50 @@
 export type ProjectStatus = "Healthy" | "Degraded" | "Deploying" | "Failed";
 export type ProjectEnvironment = "Production" | "Staging" | "Development";
-export type DeploymentStatus = "Successful" | "Deploying" | "Failed" | "Cancelled";
+export type DeploymentStatus = "PENDING" | "RUNNING" | "SUCCESSFUL" | "FAILED" | "CANCELLED";
 
 export interface ProjectDeployment {
   version: string;
   timestamp: string;
 }
 
-export interface Project {
+export interface Repository {
+  id: string;
+  provider: string;
+  name: string;
+  url: string;
+  default_branch: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Environment {
   id: string;
   name: string;
-  description: string;
-  repository: string;
-  status: ProjectStatus;
-  environments: ProjectEnvironment[];
-  serviceCount: number;
-  lastDeployment?: ProjectDeployment;
+  slug: string;
+  type: string;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 }
+
+export interface Project {
+  lastDeployment?: ProjectDeployment;
+  id: string;
+  organization: string; // uuid
+  name: string;
+  slug: string;
+  description: string;
+  status: string; // e.g. "active", "degraded", etc.
+  repository: Repository | null;
+  environments: Environment[];
+  services_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+
+
+// Keeping the mock interfaces below for now
 
 export interface EnvironmentDetail {
   id: string;
@@ -31,22 +59,27 @@ export interface EnvironmentDetail {
 
 export interface ProjectService {
   id: string;
+  environment: string;
   name: string;
+  slug: string;
+  description: string;
   status: ProjectStatus;
-  version: string;
-  replicas: number;
-  latency?: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Deployment {
   id: string;
-  version: string;
-  environment: ProjectEnvironment;
+  service: string;
+  deployment_number: number;
+  commit_sha: string;
+  image: string;
   status: DeploymentStatus;
-  commit: string;
-  branch: string;
-  timestamp: string;
-  deployer?: string;
+  started_at: string | null;
+  finished_at: string | null;
+  logs: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface ProjectActivityEvent {
